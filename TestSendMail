@@ -1,0 +1,50 @@
+package com.oracle.cloud;
+
+import java.util.Properties;
+import java.util.Date;
+
+import javax.mail.*;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.InternetAddress;
+
+
+public class TestSendMail {
+
+    public static String username = "luffyzhang@hotmail.com";
+    public static String password = "*********";
+    public static String sendAddress = "luffyzhang@hotmail.com";
+    public static String receiptAddress = "4023734@qq.com";
+
+    public static String smtpHost = "smtp.office365.com";
+    public static String port = "587";
+
+
+    public static void main(String[] args) throws Exception {
+
+        Properties pros = new Properties();
+        pros.put("mail.smtp.auth", true);
+        pros.put("mail.transport.protocol", "smtp");
+        pros.put("mail.smtp.host", smtpHost);
+        pros.put("mail.smtp.port", port);
+        pros.put("mail.smtp.starttls.enable", true);
+        pros.put("mail.debug",true);
+
+        InternetAddress internetSendAddress=new InternetAddress(sendAddress);
+        Address address1=internetSendAddress;
+
+        InternetAddress internetreceiptAddress = new InternetAddress(receiptAddress);
+        Address addess2=internetreceiptAddress;
+
+        Session sess = Session.getInstance(pros, new MyAuthenticator(username, password));
+        sess.setDebug(true);
+        Message mess = new MimeMessage(sess);
+        mess.setFrom(address1);
+        mess.setSubject("Hello Automation...");
+        mess.setText("This is my mail....");
+
+        Transport transport = sess.getTransport();
+        transport.connect(username, password);
+        transport.sendMessage(mess, new Address[]{addess2});
+
+    }
+}
